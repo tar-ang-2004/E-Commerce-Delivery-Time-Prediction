@@ -252,28 +252,28 @@ Clean, intuitive form for entering delivery parameters and receiving predictions
   <p><em>Comprehensive input fields for accurate predictions</em></p>
 </div>
 
+### 2. Analytics Dashboard
+
+Real-time statistics and insights about prediction patterns.
+
 <div align="center">
   <img src="Flask app images/Screenshot 2025-10-05 153021.png" alt="Prediction Results" width="800"/>
   <p><em>Detailed prediction results with confidence scores</em></p>
 </div>
-
-### 2. Analytics Dashboard
-
-Real-time statistics and insights about prediction patterns.
 
 <div align="center">
   <img src="Flask app images/Screenshot 2025-10-05 153033.png" alt="Dashboard Overview" width="800"/>
   <p><em>Interactive analytics dashboard showing key metrics</em></p>
 </div>
 
+### 3. MLflow Integration
+
+Experiment tracking and model management interface.
+
 <div align="center">
   <img src="Flask app images/Screenshot 2025-10-05 153048.png" alt="Statistics View" width="800"/>
   <p><em>Detailed statistics and prediction history</em></p>
 </div>
-
-### 3. MLflow Integration
-
-Experiment tracking and model management interface.
 
 <div align="center">
   <img src="Flask app images/Screenshot 2025-10-05 153103.png" alt="MLflow Interface" width="800"/>
@@ -587,3 +587,4 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 Made with ❤️ by [Tarang Kishor](https://github.com/tar-ang-2004)
 
 </div>
+
