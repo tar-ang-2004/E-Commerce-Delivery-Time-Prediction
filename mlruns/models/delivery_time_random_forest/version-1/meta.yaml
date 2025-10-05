@@ -1,0 +1,18 @@
+aliases: []
+creation_timestamp: 1759342282293
+current_stage: None
+deployment_job_state: null
+description: null
+last_updated_timestamp: 1759342282293
+metrics: null
+model_id: m-18ad57b81d134e4a818c8e7cb7d76bac
+name: delivery_time_random_forest
+params: null
+run_id: 4c9642450bb44ddaae2473284ce390ec
+run_link: null
+source: models:/m-18ad57b81d134e4a818c8e7cb7d76bac
+status: READY
+status_message: null
+storage_location: file:c:/Users/TARANG KISHOR/Desktop/PROJECTS/amaz_del/mlruns/295981873351495791/models/m-18ad57b81d134e4a818c8e7cb7d76bac/artifacts
+user_id: null
+version: 1

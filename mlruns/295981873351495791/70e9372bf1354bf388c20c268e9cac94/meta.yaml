@@ -1,0 +1,14 @@
+artifact_uri: file:c:/Users/TARANG KISHOR/Desktop/PROJECTS/amaz_del/mlruns/295981873351495791/70e9372bf1354bf388c20c268e9cac94/artifacts
+end_time: 1759342278795
+entry_point_name: ''
+experiment_id: '295981873351495791'
+lifecycle_stage: active
+run_id: 70e9372bf1354bf388c20c268e9cac94
+run_name: Linear Regression_experiment
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1759342273069
+status: 3
+tags: []
+user_id: TARANG KISHOR

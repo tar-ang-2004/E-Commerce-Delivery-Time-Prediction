@@ -1,0 +1,14 @@
+artifact_uri: file:c:/Users/TARANG KISHOR/Desktop/PROJECTS/amaz_del/mlruns/295981873351495791/dced1c1210b044199a6a913eca9c89dd/artifacts
+end_time: 1759349386474
+entry_point_name: ''
+experiment_id: '295981873351495791'
+lifecycle_stage: active
+run_id: dced1c1210b044199a6a913eca9c89dd
+run_name: prediction_20251002_013946
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1759349386380
+status: 3
+tags: []
+user_id: TARANG KISHOR

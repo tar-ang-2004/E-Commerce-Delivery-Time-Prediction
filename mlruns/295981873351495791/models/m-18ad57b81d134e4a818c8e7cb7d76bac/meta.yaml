@@ -1,0 +1,10 @@
+artifact_location: file:c:/Users/TARANG KISHOR/Desktop/PROJECTS/amaz_del/mlruns/295981873351495791/models/m-18ad57b81d134e4a818c8e7cb7d76bac/artifacts
+creation_timestamp: 1759342278936
+experiment_id: '295981873351495791'
+last_updated_timestamp: 1759342282275
+model_id: m-18ad57b81d134e4a818c8e7cb7d76bac
+model_type: null
+name: model
+source_run_id: 4c9642450bb44ddaae2473284ce390ec
+status: 2
+status_message: null

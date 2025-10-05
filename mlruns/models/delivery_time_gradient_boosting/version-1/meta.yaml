@@ -1,0 +1,18 @@
+aliases: []
+creation_timestamp: 1759342285897
+current_stage: None
+deployment_job_state: null
+description: null
+last_updated_timestamp: 1759342285897
+metrics: null
+model_id: m-860733180fbb4dbb85f8c0b74d50b8b5
+name: delivery_time_gradient_boosting
+params: null
+run_id: ca3b40571197470a9524590d7b1e5ce7
+run_link: null
+source: models:/m-860733180fbb4dbb85f8c0b74d50b8b5
+status: READY
+status_message: null
+storage_location: file:c:/Users/TARANG KISHOR/Desktop/PROJECTS/amaz_del/mlruns/295981873351495791/models/m-860733180fbb4dbb85f8c0b74d50b8b5/artifacts
+user_id: null
+version: 1

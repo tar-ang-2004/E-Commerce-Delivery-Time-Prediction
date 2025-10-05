@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - DeliveryAI Analytics</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#6366f1',
+                        secondary: '#8b5cf6',
+                        accent: '#06b6d4',
+                        success: '#10b981',
+                        warning: '#f59e0b',
+                        error: '#ef4444'
+                    },
+                    animation: {
+                        'fade-in': 'fadeIn 0.5s ease-in-out',
+                        'slide-up': 'slideUp 0.6s ease-out',
+                        'gradient': 'gradient 15s ease infinite',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        @keyframes slideUp {
+            from { transform: translateY(20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        @keyframes gradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        .gradient-bg {
+            background: linear-gradient(-45deg, #667eea, #764ba2, #f093fb, #f5576c);
+            background-size: 400% 400%;
+            animation: gradient 15s ease infinite;
+        }
+        .glass {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body class="min-h-screen gradient-bg">
+    <!-- Navigation -->
+    <nav class="glass sticky top-0 z-50" x-data="{ open: false }">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <h1 class="text-2xl font-bold text-white">
+                            <i class="fas fa-truck mr-2 text-accent"></i>
+                            DeliveryAI
+                        </h1>
+                    </div>
+                </div>
+                <div class="hidden md:flex items-center space-x-8">
+                    <a href="/" class="text-white hover:text-accent transition-colors duration-300 font-medium">
+                        <i class="fas fa-home mr-1"></i> Home
+                    </a>
+                    <a href="/dashboard" class="text-accent font-medium">
+                        <i class="fas fa-chart-line mr-1"></i> Dashboard
+                    </a>
+                    <a href="/mlflow" class="text-white hover:text-accent transition-colors duration-300 font-medium">
+                        <i class="fas fa-flask mr-1"></i> MLflow
+                    </a>
+                </div>
+                <div class="md:hidden flex items-center">
+                    <button @click="open = !open" class="text-white hover:text-accent">
+                        <i class="fas fa-bars text-xl"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <!-- Mobile menu -->
+        <div x-show="open" x-transition class="md:hidden">
+            <div class="px-2 pt-2 pb-3 space-y-1 glass">
+                <a href="/" class="block px-3 py-2 text-white hover:text-accent">Home</a>
+                <a href="/dashboard" class="block px-3 py-2 text-accent">Dashboard</a>
+                <a href="/mlflow" class="block px-3 py-2 text-white hover:text-accent">MLflow</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Header -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div class="text-center mb-12">
+            <h1 class="text-4xl md:text-6xl font-bold text-white mb-4 animate-fade-in">
+                Analytics
+                <span class="bg-gradient-to-r from-accent to-secondary bg-clip-text text-transparent">
+                    Dashboard
+                </span>
+            </h1>
+            <p class="text-xl text-white/80 animate-slide-up">
+                Real-time insights and performance metrics
+            </p>
+        </div>
+
+        <!-- Stats Cards -->
+        <div x-data="dashboardStats()">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                <!-- Total Predictions -->
+                <div class="glass rounded-2xl p-6 card-hover text-center">
+                    <div class="text-accent text-3xl mb-3">
+                        <i class="fas fa-brain"></i>
+                    </div>
+                    <div class="text-3xl font-bold text-white mb-2" x-text="stats.total_predictions"></div>
+                    <div class="text-white/60 text-sm">Total Predictions</div>
+                </div>
+
+                <!-- Average Delivery Time -->
+                <div class="glass rounded-2xl p-6 card-hover text-center">
+                    <div class="text-success text-3xl mb-3">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <div class="text-3xl font-bold text-white mb-2" x-text="Math.round(stats.avg_delivery_time) + ' min'"></div>
+                    <div class="text-white/60 text-sm">Avg Time (min)</div>
+                </div>
+
+                <!-- Model Accuracy -->
+                <div class="glass rounded-2xl p-6 card-hover text-center">
+                    <div class="text-warning text-3xl mb-3">
+                        <i class="fas fa-target"></i>
+                    </div>
+                    <div class="text-3xl font-bold text-white mb-2" x-text="stats.model_accuracy + '%'"></div>
+                    <div class="text-white/60 text-sm">Model Accuracy</div>
+                </div>
+
+                <!-- Model MAE -->
+                <div class="glass rounded-2xl p-6 card-hover text-center">
+                    <div class="text-secondary text-3xl mb-3">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <div class="text-3xl font-bold text-white mb-2" x-text="stats.model_mae"></div>
+                    <div class="text-white/60 text-sm">MAE Score</div>
+                </div>
+                </div>
+
+            <!-- Charts Row -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+            <!-- Delivery Time Distribution -->
+            <div class="glass rounded-2xl p-6 card-hover">
+                <h3 class="text-2xl font-bold text-white mb-6 flex items-center">
+                    <i class="fas fa-chart-bar mr-3 text-accent"></i>
+                    Delivery Time Distribution
+                </h3>
+                <div class="h-64">
+                    <canvas id="deliveryTimeChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Traffic Impact -->
+            <div class="glass rounded-2xl p-6 card-hover">
+                <h3 class="text-2xl font-bold text-white mb-6 flex items-center">
+                    <i class="fas fa-traffic-light mr-3 text-warning"></i>
+                    Traffic Impact Analysis
+                </h3>
+                <div class="h-64">
+                    <canvas id="trafficChart"></canvas>
+                </div>
+            </div>
+            </div>
+
+            <!-- Model Performance -->
+            <div class="glass rounded-2xl p-6 card-hover mb-8">
+                <h3 class="text-2xl font-bold text-white mb-6 flex items-center">
+                    <i class="fas fa-robot mr-3 text-secondary"></i>
+                    Model Performance Over Time
+                </h3>
+                <div class="h-64">
+                    <canvas id="performanceChart"></canvas>
+                </div>
+            </div>
+        </div>
+        <!-- End of dashboardStats wrapper -->
+
+        <!-- Recent Predictions Table -->
+        <div class="glass rounded-2xl p-6 card-hover" x-data="recentPredictions()">
+            <h3 class="text-2xl font-bold text-white mb-6 flex items-center">
+                <i class="fas fa-history mr-3 text-success"></i>
+                Recent Predictions
+            </h3>
+            
+            <div class="overflow-x-auto">
+                <table class="w-full text-white">
+                    <thead>
+                        <tr class="border-b border-white/20">
+                            <th class="text-left py-3 px-4">Time</th>
+                            <th class="text-left py-3 px-4">Distance</th>
+                            <th class="text-left py-3 px-4">Traffic</th>
+                            <th class="text-left py-3 px-4">Predicted Time</th>
+                            <th class="text-left py-3 px-4">Confidence</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <template x-for="(prediction, index) in predictions" :key="index">
+                            <tr class="border-b border-white/10 hover:bg-white/5 transition-colors">
+                                <td class="py-3 px-4 text-white/80" x-text="formatTime(prediction.time)"></td>
+                                <td class="py-3 px-4 text-accent" x-text="prediction.distance + ' km'"></td>
+                                <td class="py-3 px-4">
+                                    <span class="px-2 py-1 rounded-full text-xs" 
+                                          :class="getTrafficColor(prediction.traffic)"
+                                          x-text="prediction.traffic"></span>
+                                </td>
+                                <td class="py-3 px-4 text-success font-semibold" x-text="Math.round(prediction.predicted_time) + ' min'"></td>
+                                <td class="py-3 px-4">
+                                    <span class="px-2 py-1 rounded-full text-xs"
+                                          :class="getConfidenceColor(prediction.confidence)"
+                                          x-text="prediction.confidence + '%'"></span>
+                                </td>
+                            </tr>
+                        </template>
+                    </tbody>
+                </table>
+                
+                <template x-if="predictions.length === 0">
+                    <div class="text-center py-8 text-white/60">
+                        <i class="fas fa-inbox text-4xl mb-4"></i>
+                        <p>No recent predictions available</p>
+                    </div>
+                </template>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script>
+        function dashboardStats() {
+            return {
+                stats: {
+                    total_predictions: 0,
+                    avg_delivery_time: 0,
+                    model_accuracy: 87.5,
+                    model_mae: 7.8,
+                    traffic_impact: {},
+                    time_distribution: {}
+                },
+                async init() {
+                    console.log('Dashboard stats initializing...');
+                    await this.fetchStats();
+                    setInterval(() => this.fetchStats(), 30000);
+                },
+                async fetchStats() {
+                    try {
+                        console.log('Fetching stats from /api/stats...');
+                        const response = await fetch('/api/stats');
+                        const data = await response.json();
+                        console.log('Stats received:', data);
+                        this.stats = data;
+                        
+                        // Update charts after a short delay to ensure they're initialized
+                        setTimeout(() => {
+                            if (window.deliveryChart && this.stats.time_distribution) {
+                                console.log('Updating delivery chart...');
+                                this.updateDeliveryChart();
+                            }
+                            if (window.trafficChart && this.stats.traffic_impact) {
+                                console.log('Updating traffic chart...');
+                                this.updateTrafficChart();
+                            }
+                        }, 500);
+                    } catch (error) {
+                        console.error('Failed to load stats:', error);
+                    }
+                },
+                updateDeliveryChart() {
+                    const labels = Object.keys(this.stats.time_distribution);
+                    const data = Object.values(this.stats.time_distribution);
+                    window.deliveryChart.data.labels = labels;
+                    window.deliveryChart.data.datasets[0].data = data;
+                    window.deliveryChart.update();
+                },
+                updateTrafficChart() {
+                    const labels = Object.keys(this.stats.traffic_impact);
+                    const data = labels.map(t => this.stats.traffic_impact[t].avg_time);
+                    window.trafficChart.data.labels = labels;
+                    window.trafficChart.data.datasets[0].data = data;
+                    window.trafficChart.update();
+                }
+            }
+        }
+
+        function recentPredictions() {
+            return {
+                predictions: [],
+                async init() {
+                    await this.fetchPredictions();
+                    setInterval(() => this.fetchPredictions(), 30000);
+                },
+                async fetchPredictions() {
+                    try {
+                        const response = await fetch('/api/stats');
+                        const data = await response.json();
+                        this.predictions = data.recent_predictions || [];
+                    } catch (error) {
+                        console.error('Failed to load predictions:', error);
+                    }
+                },
+                getTrafficColor(traffic) {
+                    const colors = {
+                        'Very Low': 'bg-green-500/20 text-green-300',
+                        'Low': 'bg-green-500/20 text-green-300',
+                        'Medium': 'bg-yellow-500/20 text-yellow-300',
+                        'High': 'bg-orange-500/20 text-orange-300',
+                        'Very High': 'bg-red-500/20 text-red-300',
+                        'Jam': 'bg-red-500/20 text-red-300'
+                    };
+                    return colors[traffic] || 'bg-gray-500/20 text-gray-300';
+                },
+                getConfidenceColor(confidence) {
+                    if (confidence >= 85) return 'bg-green-500/20 text-green-300';
+                    if (confidence >= 70) return 'bg-yellow-500/20 text-yellow-300';
+                    return 'bg-red-500/20 text-red-300';
+                },
+                formatTime(isoString) {
+                    if (!isoString) return 'N/A';
+                    const date = new Date(isoString);
+                    return date.toLocaleTimeString();
+                }
+            }
+        }
+
+        // Initialize Charts
+        document.addEventListener('DOMContentLoaded', function() {
+            // Delivery Time Distribution Chart
+            const deliveryCtx = document.getElementById('deliveryTimeChart').getContext('2d');
+            window.deliveryChart = new Chart(deliveryCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['0-30 min', '30-45 min', '45-60 min', '60-90 min', '90+ min'],
+                    datasets: [{
+                        label: 'Delivery Count',
+                        data: [25, 45, 35, 20, 10],
+                        backgroundColor: 'rgba(6, 182, 212, 0.6)',
+                        borderColor: 'rgba(6, 182, 212, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            labels: {
+                                color: 'white'
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                color: 'white'
+                            },
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.1)'
+                            }
+                        },
+                        x: {
+                            ticks: {
+                                color: 'white'
+                            },
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.1)'
+                            }
+                        }
+                    }
+                }
+            });
+
+            // Traffic Impact Chart
+            const trafficCtx = document.getElementById('trafficChart').getContext('2d');
+            window.trafficChart = new Chart(trafficCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['Low', 'Medium', 'High'],
+                    datasets: [{
+                        label: 'Avg Delivery Time (min)',
+                        data: [25, 40, 60],
+                        backgroundColor: [
+                            'rgba(16, 185, 129, 0.8)',
+                            'rgba(245, 158, 11, 0.8)',
+                            'rgba(239, 68, 68, 0.8)'
+                        ],
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            labels: {
+                                color: 'white'
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                color: 'white'
+                            },
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.1)'
+                            }
+                        },
+                        x: {
+                            ticks: {
+                                color: 'white'
+                            },
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.1)'
+                            }
+                        }
+                    }
+                }
+                }
+            });
+
+            // Performance Chart
+            const performanceCtx = document.getElementById('performanceChart').getContext('2d');
+            new Chart(performanceCtx, {
+                type: 'line',
+                data: {
+                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+                    datasets: [{
+                        label: 'Model Accuracy',
+                        data: [0.82, 0.85, 0.87, 0.89, 0.91, 0.93],
+                        borderColor: 'rgba(139, 92, 246, 1)',
+                        backgroundColor: 'rgba(139, 92, 246, 0.1)',
+                        tension: 0.4,
+                        fill: true
+                    }, {
+                        label: 'MAE Score',
+                        data: [12.5, 11.2, 10.8, 10.1, 9.5, 8.9],
+                        borderColor: 'rgba(245, 158, 11, 1)',
+                        backgroundColor: 'rgba(245, 158, 11, 0.1)',
+                        tension: 0.4,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            labels: {
+                                color: 'white'
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                color: 'white'
+                            },
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.1)'
+                            }
+                        },
+                        x: {
+                            ticks: {
+                                color: 'white'
+                            },
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.1)'
+                            }
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>

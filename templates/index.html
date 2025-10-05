@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Delivery Time Prediction - AI Powered Logistics</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#6366f1',
+                        secondary: '#8b5cf6',
+                        accent: '#06b6d4',
+                        success: '#10b981',
+                        warning: '#f59e0b',
+                        error: '#ef4444'
+                    },
+                    animation: {
+                        'fade-in': 'fadeIn 0.5s ease-in-out',
+                        'slide-up': 'slideUp 0.6s ease-out',
+                        'pulse-slow': 'pulse 3s infinite',
+                        'bounce-slow': 'bounce 2s infinite',
+                        'gradient': 'gradient 15s ease infinite',
+                    },
+                    backgroundImage: {
+                        'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
+                        'gradient-conic': 'conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        @keyframes slideUp {
+            from { transform: translateY(20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        @keyframes gradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        .gradient-bg {
+            background: linear-gradient(-45deg, #667eea, #764ba2, #f093fb, #f5576c);
+            background-size: 400% 400%;
+            animation: gradient 15s ease infinite;
+        }
+        .glass {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body class="min-h-screen gradient-bg">
+    <!-- Navigation -->
+    <nav class="glass sticky top-0 z-50" x-data="{ open: false }">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <h1 class="text-2xl font-bold text-white">
+                            <i class="fas fa-truck mr-2 text-accent"></i>
+                            DeliveryAI
+                        </h1>
+                    </div>
+                </div>
+                <div class="hidden md:flex items-center space-x-8">
+                    <a href="/" class="text-white hover:text-accent transition-colors duration-300 font-medium">
+                        <i class="fas fa-home mr-1"></i> Home
+                    </a>
+                    <a href="/dashboard" class="text-white hover:text-accent transition-colors duration-300 font-medium">
+                        <i class="fas fa-chart-line mr-1"></i> Dashboard
+                    </a>
+                    <a href="/mlflow" class="text-white hover:text-accent transition-colors duration-300 font-medium">
+                        <i class="fas fa-flask mr-1"></i> MLflow
+                    </a>
+                </div>
+                <div class="md:hidden flex items-center">
+                    <button @click="open = !open" class="text-white hover:text-accent">
+                        <i class="fas fa-bars text-xl"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <!-- Mobile menu -->
+        <div x-show="open" x-transition class="md:hidden">
+            <div class="px-2 pt-2 pb-3 space-y-1 glass">
+                <a href="/" class="block px-3 py-2 text-white hover:text-accent">Home</a>
+                <a href="/dashboard" class="block px-3 py-2 text-white hover:text-accent">Dashboard</a>
+                <a href="/mlflow" class="block px-3 py-2 text-white hover:text-accent">MLflow</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <div class="relative overflow-hidden">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+            <div class="text-center">
+                <h1 class="text-5xl md:text-7xl font-bold text-white mb-6 animate-fade-in">
+                    AI-Powered
+                    <span class="bg-gradient-to-r from-accent to-secondary bg-clip-text text-transparent">
+                        Delivery
+                    </span>
+                    Prediction
+                </h1>
+                <p class="text-xl md:text-2xl text-white/80 mb-8 animate-slide-up">
+                    Predict delivery times with machine learning precision
+                </p>
+                <div class="flex justify-center space-x-4 animate-bounce-slow">
+                    <i class="fas fa-brain text-4xl text-accent"></i>
+                    <i class="fas fa-shipping-fast text-4xl text-secondary"></i>
+                    <i class="fas fa-chart-line text-4xl text-success"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-12">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <!-- Prediction Form -->
+            <div class="lg:col-span-2">
+                <div class="glass rounded-3xl p-8 card-hover">
+                    <h2 class="text-3xl font-bold text-white mb-8 flex items-center">
+                        <i class="fas fa-calculator mr-3 text-accent"></i>
+                        Delivery Time Calculator
+                    </h2>
+                    
+                    <form id="predictionForm" x-data="predictionForm()" class="space-y-6">
+                        <!-- Row 1: Agent Information -->
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                            <div class="space-y-2">
+                                <label class="block text-white font-semibold">
+                                    <i class="fas fa-user mr-2 text-accent"></i>Agent Age
+                                </label>
+                                <input type="number" x-model="formData.agent_age" 
+                                       class="w-full px-4 py-3 rounded-xl bg-white/10 border border-white/20 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-accent focus:border-transparent transition-all duration-300"
+                                       placeholder="Enter age (18-65)" min="18" max="65" required>
+                            </div>
+                            <div class="space-y-2">
+                                <label class="block text-white font-semibold">
+                                    <i class="fas fa-star mr-2 text-accent"></i>Agent Rating
+                                </label>
+                                <input type="number" x-model="formData.agent_rating" step="0.1"
+                                       class="w-full px-4 py-3 rounded-xl bg-white/10 border border-white/20 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-accent focus:border-transparent transition-all duration-300"
+                                       placeholder="Rating (1.0 - 5.0)" min="1" max="5" required>
+                            </div>
+                            <div class="space-y-2">
+                                <label class="block text-white font-semibold">
+                                    <i class="fas fa-briefcase mr-2 text-accent"></i>Experience (Years)
+                                </label>
+                                <input type="number" x-model="formData.agent_experience" step="0.5"
+                                       class="w-full px-4 py-3 rounded-xl bg-white/10 border border-white/20 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-accent focus:border-transparent transition-all duration-300"
+                                       placeholder="Years of experience" min="0" max="20" required>
+                            </div>
+                        </div>
+
+                        <!-- Row 2: Location & Time -->
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                            <div class="space-y-2">
+                                <label class="block text-white font-semibold">
+                                    <i class="fas fa-route mr-2 text-accent"></i>Distance (km)
+                                </label>
+                                <input type="number" x-model="formData.distance_km" step="0.1"
+                                       class="w-full px-4 py-3 rounded-xl bg-white/10 border border-white/20 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-accent focus:border-transparent transition-all duration-300"
+                                       placeholder="Distance in kilometers" min="0.1" max="100" required>
+                            </div>
+                            <div class="space-y-2">
+                                <label class="block text-white font-semibold">
+                                    <i class="fas fa-clock mr-2 text-accent"></i>Order Hour
+                                </label>
+                                <input type="number" x-model="formData.order_hour"
+                                       class="w-full px-4 py-3 rounded-xl bg-white/10 border border-white/20 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-accent focus:border-transparent transition-all duration-300"
+                                       placeholder="Hour (0-23)" min="0" max="23" required>
+                            </div>
+                            <div class="space-y-2">
+                                <label class="block text-white font-semibold">
+                                    <i class="fas fa-calendar mr-2 text-accent"></i>Weekend
+                                </label>
+                                <select x-model="formData.is_weekend"
+                                        class="w-full px-4 py-3 rounded-xl bg-white/10 border border-white/20 text-white focus:outline-none focus:ring-2 focus:ring-accent focus:border-transparent transition-all duration-300">
+                                    <option value="No" class="text-gray-800">Weekday</option>
+                                    <option value="Yes" class="text-gray-800">Weekend</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Row 3: Traffic & Weather -->
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div class="space-y-2">
+                                <label class="block text-white font-semibold">
+                                    <i class="fas fa-traffic-light mr-2 text-accent"></i>Traffic Condition
+                                </label>
+                                <select x-model="formData.traffic" 
+                                        class="w-full px-4 py-3 rounded-xl bg-white/10 border border-white/20 text-white focus:outline-none focus:ring-2 focus:ring-accent focus:border-transparent transition-all duration-300">
+                                    <option value="Very Low" class="text-gray-800">Very Low Traffic</option>
+                                    <option value="Low" class="text-gray-800">Low Traffic</option>
+                                    <option value="Medium" class="text-gray-800">Medium Traffic</option>
+                                    <option value="High" class="text-gray-800">High Traffic</option>
+                                    <option value="Very High" class="text-gray-800">Very High Traffic</option>
+                                    <option value="Jam" class="text-gray-800">Traffic Jam</option>
+                                    <option value="Heavy Jam" class="text-gray-800">Heavy Traffic Jam</option>
+                                </select>
+                            </div>
+                            <div class="space-y-2">
+                                <label class="block text-white font-semibold">
+                                    <i class="fas fa-cloud-sun mr-2 text-accent"></i>Weather
+                                </label>
+                                <select x-model="formData.weather"
+                                        class="w-full px-4 py-3 rounded-xl bg-white/10 border border-white/20 text-white focus:outline-none focus:ring-2 focus:ring-accent focus:border-transparent transition-all duration-300">
+                                    <option value="Clear" class="text-gray-800">Clear</option>
+                                    <option value="Sunny" class="text-gray-800">Sunny</option>
+                                    <option value="Partly Cloudy" class="text-gray-800">Partly Cloudy</option>
+                                    <option value="Cloudy" class="text-gray-800">Cloudy</option>
+                                    <option value="Light Rain" class="text-gray-800">Light Rain</option>
+                                    <option value="Rain" class="text-gray-800">Rain</option>
+                                    <option value="Heavy Rain" class="text-gray-800">Heavy Rain</option>
+                                    <option value="Fog" class="text-gray-800">Fog</option>
+                                    <option value="Mist" class="text-gray-800">Mist</option>
+                                    <option value="Windy" class="text-gray-800">Windy</option>
+                                    <option value="Sandstorms" class="text-gray-800">Sandstorms</option>
+                                    <option value="Stormy" class="text-gray-800">Stormy</option>
+                                    <option value="Thunderstorm" class="text-gray-800">Thunderstorm</option>
+                                    <option value="Snow" class="text-gray-800">Snow</option>
+                                    <option value="Hail" class="text-gray-800">Hail</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Row 4: Area & Vehicle -->
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div class="space-y-2">
+                                <label class="block text-white font-semibold">
+                                    <i class="fas fa-city mr-2 text-accent"></i>Area Type
+                                </label>
+                                <select x-model="formData.area"
+                                        class="w-full px-4 py-3 rounded-xl bg-white/10 border border-white/20 text-white focus:outline-none focus:ring-2 focus:ring-accent focus:border-transparent transition-all duration-300">
+                                    <option value="Rural" class="text-gray-800">Rural</option>
+                                    <option value="Suburban" class="text-gray-800">Suburban</option>
+                                    <option value="Urban" class="text-gray-800">Urban</option>
+                                    <option value="Metropolitan" class="text-gray-800">Metropolitan</option>
+                                    <option value="Dense Urban" class="text-gray-800">Dense Urban</option>
+                                    <option value="City Center" class="text-gray-800">City Center</option>
+                                </select>
+                            </div>
+                            <div class="space-y-2">
+                                <label class="block text-white font-semibold">
+                                    <i class="fas fa-motorcycle mr-2 text-accent"></i>Vehicle Type
+                                </label>
+                                <select x-model="formData.vehicle"
+                                        class="w-full px-4 py-3 rounded-xl bg-white/10 border border-white/20 text-white focus:outline-none focus:ring-2 focus:ring-accent focus:border-transparent transition-all duration-300">
+                                    <option value="bicycle" class="text-gray-800">Bicycle</option>
+                                    <option value="e-bike" class="text-gray-800">E-Bike</option>
+                                    <option value="scooter" class="text-gray-800">Scooter</option>
+                                    <option value="motorcycle" class="text-gray-800">Motorcycle</option>
+                                    <option value="car" class="text-gray-800">Car</option>
+                                    <option value="van" class="text-gray-800">Van</option>
+                                    <option value="truck" class="text-gray-800">Truck</option>
+                                    <option value="drone" class="text-gray-800">Drone</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Row 5: Package Information -->
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                            <div class="space-y-2">
+                                <label class="block text-white font-semibold">
+                                    <i class="fas fa-weight mr-2 text-accent"></i>Package Weight (kg)
+                                </label>
+                                <input type="number" x-model="formData.package_weight" step="0.1"
+                                       class="w-full px-4 py-3 rounded-xl bg-white/10 border border-white/20 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-accent focus:border-transparent transition-all duration-300"
+                                       placeholder="Weight in kg" min="0.1" max="50" required>
+                            </div>
+                            <div class="space-y-2">
+                                <label class="block text-white font-semibold">
+                                    <i class="fas fa-cube mr-2 text-accent"></i>Package Size
+                                </label>
+                                <select x-model="formData.package_size"
+                                        class="w-full px-4 py-3 rounded-xl bg-white/10 border border-white/20 text-white focus:outline-none focus:ring-2 focus:ring-accent focus:border-transparent transition-all duration-300">
+                                    <option value="XS" class="text-gray-800">Extra Small (XS)</option>
+                                    <option value="Small" class="text-gray-800">Small</option>
+                                    <option value="Medium" class="text-gray-800">Medium</option>
+                                    <option value="Large" class="text-gray-800">Large</option>
+                                    <option value="XL" class="text-gray-800">Extra Large (XL)</option>
+                                    <option value="XXL" class="text-gray-800">XXL</option>
+                                    <option value="Oversized" class="text-gray-800">Oversized</option>
+                                </select>
+                            </div>
+                            <div class="space-y-2">
+                                <label class="block text-white font-semibold">
+                                    <i class="fas fa-tags mr-2 text-accent"></i>Package Category
+                                </label>
+                                <select x-model="formData.package_category"
+                                        class="w-full px-4 py-3 rounded-xl bg-white/10 border border-white/20 text-white focus:outline-none focus:ring-2 focus:ring-accent focus:border-transparent transition-all duration-300">
+                                    <option value="Documents" class="text-gray-800">Documents</option>
+                                    <option value="Electronics" class="text-gray-800">Electronics</option>
+                                    <option value="Clothing" class="text-gray-800">Clothing</option>
+                                    <option value="Books" class="text-gray-800">Books</option>
+                                    <option value="Food" class="text-gray-800">Food</option>
+                                    <option value="Pharmaceuticals" class="text-gray-800">Pharmaceuticals</option>
+                                    <option value="Fragile" class="text-gray-800">Fragile Items</option>
+                                    <option value="Perishable" class="text-gray-800">Perishable</option>
+                                    <option value="Hazardous" class="text-gray-800">Hazardous</option>
+                                    <option value="Valuable" class="text-gray-800">Valuable Items</option>
+                                    <option value="Frozen" class="text-gray-800">Frozen Items</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Row 6: Delivery & Customer Info -->
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                            <div class="space-y-2">
+                                <label class="block text-white font-semibold">
+                                    <i class="fas fa-shipping-fast mr-2 text-accent"></i>Delivery Priority
+                                </label>
+                                <select x-model="formData.delivery_priority"
+                                        class="w-full px-4 py-3 rounded-xl bg-white/10 border border-white/20 text-white focus:outline-none focus:ring-2 focus:ring-accent focus:border-transparent transition-all duration-300">
+                                    <option value="Standard" class="text-gray-800">Standard</option>
+                                    <option value="Express" class="text-gray-800">Express</option>
+                                    <option value="Priority" class="text-gray-800">Priority</option>
+                                    <option value="Same Day" class="text-gray-800">Same Day</option>
+                                    <option value="Next Day" class="text-gray-800">Next Day</option>
+                                    <option value="Urgent" class="text-gray-800">Urgent</option>
+                                    <option value="Emergency" class="text-gray-800">Emergency</option>
+                                </select>
+                            </div>
+                            <div class="space-y-2">
+                                <label class="block text-white font-semibold">
+                                    <i class="fas fa-user-tag mr-2 text-accent"></i>Customer Type
+                                </label>
+                                <select x-model="formData.customer_type"
+                                        class="w-full px-4 py-3 rounded-xl bg-white/10 border border-white/20 text-white focus:outline-none focus:ring-2 focus:ring-accent focus:border-transparent transition-all duration-300">
+                                    <option value="Regular" class="text-gray-800">Regular</option>
+                                    <option value="Premium" class="text-gray-800">Premium</option>
+                                    <option value="VIP" class="text-gray-800">VIP</option>
+                                    <option value="Business" class="text-gray-800">Business</option>
+                                    <option value="Government" class="text-gray-800">Government</option>
+                                    <option value="Medical" class="text-gray-800">Medical</option>
+                                </select>
+                            </div>
+                            <div class="space-y-2">
+                                <label class="block text-white font-semibold">
+                                    <i class="fas fa-route mr-2 text-accent"></i>Route Complexity
+                                </label>
+                                <select x-model="formData.route_complexity"
+                                        class="w-full px-4 py-3 rounded-xl bg-white/10 border border-white/20 text-white focus:outline-none focus:ring-2 focus:ring-accent focus:border-transparent transition-all duration-300">
+                                    <option value="Simple" class="text-gray-800">Simple</option>
+                                    <option value="Moderate" class="text-gray-800">Moderate</option>
+                                    <option value="Complex" class="text-gray-800">Complex</option>
+                                    <option value="Very Complex" class="text-gray-800">Very Complex</option>
+                                    <option value="Extremely Complex" class="text-gray-800">Extremely Complex</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Row 7: Additional Features -->
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div class="space-y-2">
+                                <label class="block text-white font-semibold">
+                                    <i class="fas fa-gas-pump mr-2 text-accent"></i>Fuel Efficiency (1-5)
+                                </label>
+                                <input type="number" x-model="formData.fuel_efficiency" step="0.1"
+                                       class="w-full px-4 py-3 rounded-xl bg-white/10 border border-white/20 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-accent focus:border-transparent transition-all duration-300"
+                                       placeholder="Vehicle fuel efficiency" min="1" max="5" required>
+                            </div>
+                            <div class="space-y-2">
+                                <label class="block text-white font-semibold">
+                                    <i class="fas fa-tasks mr-2 text-accent"></i>Agent Workload (1-5)
+                                </label>
+                                <input type="number" x-model="formData.agent_workload" step="0.1"
+                                       class="w-full px-4 py-3 rounded-xl bg-white/10 border border-white/20 text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-accent focus:border-transparent transition-all duration-300"
+                                       placeholder="Current workload level" min="1" max="5" required>
+                            </div>
+                        </div>
+
+                        <!-- Submit Button -->
+                        <button type="submit" @click="submitForm" :disabled="loading"
+                                class="w-full py-4 px-8 bg-gradient-to-r from-accent to-secondary text-white font-bold rounded-xl hover:from-secondary hover:to-accent transform hover:scale-105 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2">
+                            <i class="fas fa-brain" x-show="!loading"></i>
+                            <i class="fas fa-spinner fa-spin" x-show="loading"></i>
+                            <span x-text="loading ? 'Predicting...' : 'Predict Delivery Time'"></span>
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Results & Info Panel -->
+            <div class="space-y-8">
+                <!-- Prediction Result -->
+                <div class="glass rounded-3xl p-6 card-hover" x-data="{ showResult: false }">
+                    <h3 class="text-2xl font-bold text-white mb-6 flex items-center">
+                        <i class="fas fa-chart-pie mr-3 text-success"></i>
+                        Prediction Result
+                    </h3>
+                    
+                    <div id="result" class="hidden">
+                        <div class="text-center space-y-6">
+                            <div class="text-6xl font-bold text-accent" id="predicted-time"></div>
+                            <div class="text-white/80" id="predicted-hours"></div>
+                            <div class="px-4 py-2 rounded-full text-sm font-semibold" id="confidence-badge"></div>
+                            
+                            <!-- Enhanced Results -->
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6">
+                                <div class="bg-white/5 rounded-lg p-4">
+                                    <div class="text-sm text-white/60">Confidence Score</div>
+                                    <div class="text-xl font-bold text-accent" id="confidence-score"></div>
+                                </div>
+                                <div class="bg-white/5 rounded-lg p-4">
+                                    <div class="text-sm text-white/60">Estimated Cost</div>
+                                    <div class="text-xl font-bold text-success" id="estimated-cost"></div>
+                                </div>
+                                <div class="bg-white/5 rounded-lg p-4">
+                                    <div class="text-sm text-white/60">Delivery Window</div>
+                                    <div class="text-lg font-semibold text-warning" id="delivery-window"></div>
+                                </div>
+                                <div class="bg-white/5 rounded-lg p-4">
+                                    <div class="text-sm text-white/60">Environmental Impact</div>
+                                    <div class="text-lg font-semibold text-secondary" id="environmental-impact"></div>
+                                </div>
+                            </div>
+                            
+                            <!-- Recommendations -->
+                            <div class="mt-6">
+                                <h4 class="text-lg font-semibold text-white mb-3">Recommendations</h4>
+                                <div id="recommendations" class="space-y-2"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="no-result" class="text-center text-white/60">
+                        <i class="fas fa-clock text-4xl mb-4"></i>
+                        <p>Enter delivery details to get prediction</p>
+                    </div>
+
+                    <div id="error" class="hidden bg-red-500/20 border border-red-500/50 rounded-xl p-4">
+                        <div class="flex items-center space-x-2 text-red-300">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            <span id="error-text"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Model Info -->
+                <div class="glass rounded-3xl p-6 card-hover" x-data="modelInfo()">
+                    <h3 class="text-2xl font-bold text-white mb-6 flex items-center">
+                        <i class="fas fa-robot mr-3 text-secondary"></i>
+                        Model Information
+                    </h3>
+                    
+                    <template x-if="info">
+                        <div class="space-y-4">
+                            <div class="flex justify-between items-center">
+                                <span class="text-white/80">Model Type:</span>
+                                <span class="text-white font-semibold" x-text="info.model_name"></span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-white/80">RMSE:</span>
+                                <span class="text-accent font-semibold" x-text="info.rmse"></span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-white/80">MAE:</span>
+                                <span class="text-success font-semibold" x-text="info.mae"></span>
+                            </div>
+                            <div class="flex justify-between items-center">
+                                <span class="text-white/80">R² Score:</span>
+                                <span class="text-warning font-semibold" x-text="info.r2_score"></span>
+                            </div>
+                        </div>
+                    </template>
+                    
+                    <template x-if="!info">
+                        <div class="text-center text-white/60">
+                            <i class="fas fa-spinner fa-spin text-2xl mb-2"></i>
+                            <p>Loading model information...</p>
+                        </div>
+                    </template>
+                </div>
+
+                <!-- Quick Stats -->
+                <div class="glass rounded-3xl p-6 card-hover" x-data="stats()">
+                    <h3 class="text-2xl font-bold text-white mb-6 flex items-center">
+                        <i class="fas fa-tachometer-alt mr-3 text-warning"></i>
+                        Quick Stats
+                    </h3>
+                    
+                    <template x-if="data">
+                        <div class="grid grid-cols-2 gap-4">
+                            <div class="text-center">
+                                <div class="text-2xl font-bold text-accent" x-text="data.total_predictions"></div>
+                                <div class="text-sm text-white/60">Predictions</div>
+                            </div>
+                            <div class="text-center">
+                                <div class="text-2xl font-bold text-success" x-text="Math.round(data.avg_delivery_time)"></div>
+                                <div class="text-sm text-white/60">Avg Time (min)</div>
+                            </div>
+                        </div>
+                    </template>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script>
+        function predictionForm() {
+            return {
+                loading: false,
+                formData: {
+                    agent_age: 30,
+                    agent_rating: 4.5,
+                    agent_experience: 2.0,
+                    distance_km: 10,
+                    order_hour: 14,
+                    traffic: 'Medium',
+                    weather: 'Sunny',
+                    area: 'Urban',
+                    vehicle: 'motorcycle',
+                    is_weekend: 'No',
+                    package_weight: 2.0,
+                    package_size: 'Medium',
+                    package_category: 'Electronics',
+                    delivery_priority: 'Standard',
+                    customer_type: 'Regular',
+                    route_complexity: 'Moderate',
+                    fuel_efficiency: 3.0,
+                    agent_workload: 3.0
+                },
+                async submitForm(event) {
+                    event.preventDefault();
+                    this.loading = true;
+                    
+                    // Hide previous results
+                    document.getElementById('result').classList.add('hidden');
+                    document.getElementById('error').classList.add('hidden');
+                    document.getElementById('no-result').classList.add('hidden');
+                    
+                    try {
+                        const response = await fetch('/predict', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify(this.formData)
+                        });
+                        
+                        const result = await response.json();
+                        
+                        if (result.success) {
+                            // Display main prediction
+                            document.getElementById('predicted-time').textContent = `${result.predicted_time} min`;
+                            document.getElementById('predicted-hours').textContent = `(${result.predicted_time_hours} hours)`;
+                            
+                            // Display confidence
+                            const badge = document.getElementById('confidence-badge');
+                            badge.textContent = `${result.confidence_level} Confidence`;
+                            badge.className = `px-4 py-2 rounded-full text-sm font-semibold ${
+                                result.confidence_level === 'High' ? 'bg-green-500/20 text-green-300' :
+                                result.confidence_level === 'Medium' ? 'bg-yellow-500/20 text-yellow-300' :
+                                'bg-red-500/20 text-red-300'
+                            }`;
+                            
+                            // Display enhanced results
+                            document.getElementById('confidence-score').textContent = `${result.confidence_score}%`;
+                            document.getElementById('estimated-cost').textContent = `$${result.estimated_cost}`;
+                            document.getElementById('delivery-window').textContent = 
+                                `${result.delivery_window.min} - ${result.delivery_window.max} min`;
+                            document.getElementById('environmental-impact').textContent = 
+                                `${result.environmental_impact} kg CO₂`;
+                            
+                            // Display recommendations
+                            const recommendationsDiv = document.getElementById('recommendations');
+                            recommendationsDiv.innerHTML = '';
+                            result.recommendations.forEach(rec => {
+                                const recDiv = document.createElement('div');
+                                recDiv.className = 'bg-white/5 rounded-lg p-3 text-sm text-white/80';
+                                recDiv.innerHTML = `<i class="fas fa-lightbulb text-accent mr-2"></i>${rec}`;
+                                recommendationsDiv.appendChild(recDiv);
+                            });
+                            
+                            document.getElementById('result').classList.remove('hidden');
+                        } else {
+                            document.getElementById('error-text').textContent = result.error;
+                            document.getElementById('error').classList.remove('hidden');
+                        }
+                    } catch (error) {
+                        document.getElementById('error-text').textContent = 'Network error occurred';
+                        document.getElementById('error').classList.remove('hidden');
+                    } finally {
+                        this.loading = false;
+                    }
+                }
+            }
+        }
+
+        function modelInfo() {
+            return {
+                info: null,
+                async init() {
+                    try {
+                        const response = await fetch('/model_info');
+                        this.info = await response.json();
+                    } catch (error) {
+                        console.error('Failed to load model info:', error);
+                    }
+                }
+            }
+        }
+
+        function stats() {
+            return {
+                data: null,
+                async init() {
+                    try {
+                        const response = await fetch('/api/stats');
+                        this.data = await response.json();
+                    } catch (error) {
+                        console.error('Failed to load stats:', error);
+                        this.data = { total_predictions: 0, avg_delivery_time: 0 };
+                    }
+                }
+            }
+        }
+    </script>
+</body>
+</html>

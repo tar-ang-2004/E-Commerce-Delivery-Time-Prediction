@@ -1,0 +1,22 @@
+artifact_path: file:c:/Users/TARANG KISHOR/Desktop/PROJECTS/amaz_del/mlruns/295981873351495791/models/m-18ad57b81d134e4a818c8e7cb7d76bac/artifacts
+flavors:
+  python_function:
+    env:
+      conda: conda.yaml
+      virtualenv: python_env.yaml
+    loader_module: mlflow.sklearn
+    model_path: model.pkl
+    predict_fn: predict
+    python_version: 3.13.4
+  sklearn:
+    code: null
+    pickled_model: model.pkl
+    serialization_format: cloudpickle
+    sklearn_version: 1.7.2
+mlflow_version: 3.4.0
+model_id: m-18ad57b81d134e4a818c8e7cb7d76bac
+model_size_bytes: 50372392
+model_uuid: m-18ad57b81d134e4a818c8e7cb7d76bac
+prompts: null
+run_id: 4c9642450bb44ddaae2473284ce390ec
+utc_time_created: '2025-10-01 18:11:18.992012'

@@ -1,0 +1,14 @@
+artifact_uri: file:c:/Users/TARANG KISHOR/Desktop/PROJECTS/amaz_del/mlruns/295981873351495791/4c9642450bb44ddaae2473284ce390ec/artifacts
+end_time: 1759342282405
+entry_point_name: ''
+experiment_id: '295981873351495791'
+lifecycle_stage: active
+run_id: 4c9642450bb44ddaae2473284ce390ec
+run_name: Random Forest_experiment
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1759342278800
+status: 3
+tags: []
+user_id: TARANG KISHOR

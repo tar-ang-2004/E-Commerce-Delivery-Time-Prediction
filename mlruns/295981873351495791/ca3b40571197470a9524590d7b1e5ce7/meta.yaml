@@ -1,0 +1,14 @@
+artifact_uri: file:c:/Users/TARANG KISHOR/Desktop/PROJECTS/amaz_del/mlruns/295981873351495791/ca3b40571197470a9524590d7b1e5ce7/artifacts
+end_time: 1759342285969
+entry_point_name: ''
+experiment_id: '295981873351495791'
+lifecycle_stage: active
+run_id: ca3b40571197470a9524590d7b1e5ce7
+run_name: Gradient Boosting_experiment
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1759342282410
+status: 3
+tags: []
+user_id: TARANG KISHOR

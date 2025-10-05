@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MLflow - DeliveryAI Model Tracking</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#6366f1',
+                        secondary: '#8b5cf6',
+                        accent: '#06b6d4',
+                        success: '#10b981',
+                        warning: '#f59e0b',
+                        error: '#ef4444'
+                    },
+                    animation: {
+                        'fade-in': 'fadeIn 0.5s ease-in-out',
+                        'slide-up': 'slideUp 0.6s ease-out',
+                        'gradient': 'gradient 15s ease infinite',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        @keyframes slideUp {
+            from { transform: translateY(20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        @keyframes gradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        .gradient-bg {
+            background: linear-gradient(-45deg, #667eea, #764ba2, #f093fb, #f5576c);
+            background-size: 400% 400%;
+            animation: gradient 15s ease infinite;
+        }
+        .glass {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body class="min-h-screen gradient-bg">
+    <!-- Navigation -->
+    <nav class="glass sticky top-0 z-50" x-data="{ open: false }">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <h1 class="text-2xl font-bold text-white">
+                            <i class="fas fa-truck mr-2 text-accent"></i>
+                            DeliveryAI
+                        </h1>
+                    </div>
+                </div>
+                <div class="hidden md:flex items-center space-x-8">
+                    <a href="/" class="text-white hover:text-accent transition-colors duration-300 font-medium">
+                        <i class="fas fa-home mr-1"></i> Home
+                    </a>
+                    <a href="/dashboard" class="text-white hover:text-accent transition-colors duration-300 font-medium">
+                        <i class="fas fa-chart-line mr-1"></i> Dashboard
+                    </a>
+                    <a href="/mlflow" class="text-accent font-medium">
+                        <i class="fas fa-flask mr-1"></i> MLflow
+                    </a>
+                </div>
+                <div class="md:hidden flex items-center">
+                    <button @click="open = !open" class="text-white hover:text-accent">
+                        <i class="fas fa-bars text-xl"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <!-- Mobile menu -->
+        <div x-show="open" x-transition class="md:hidden">
+            <div class="px-2 pt-2 pb-3 space-y-1 glass">
+                <a href="/" class="block px-3 py-2 text-white hover:text-accent">Home</a>
+                <a href="/dashboard" class="block px-3 py-2 text-white hover:text-accent">Dashboard</a>
+                <a href="/mlflow" class="block px-3 py-2 text-accent">MLflow</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Header -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div class="text-center mb-12">
+            <h1 class="text-4xl md:text-6xl font-bold text-white mb-4 animate-fade-in">
+                MLflow
+                <span class="bg-gradient-to-r from-accent to-secondary bg-clip-text text-transparent">
+                    Tracking
+                </span>
+            </h1>
+            <p class="text-xl text-white/80 animate-slide-up">
+                Monitor and compare machine learning experiments
+            </p>
+        </div>
+
+        <!-- MLflow Controls -->
+        <div class="glass rounded-2xl p-6 mb-8 card-hover">
+            <div class="flex flex-wrap items-center justify-between gap-4">
+                <div class="flex items-center space-x-4">
+                    <h3 class="text-xl font-bold text-white flex items-center">
+                        <i class="fas fa-flask mr-3 text-accent"></i>
+                        Experiment Management
+                    </h3>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <button onclick="window.open('http://localhost:5000', '_blank')" 
+                            class="px-4 py-2 bg-accent text-white rounded-lg hover:bg-accent/80 transition-colors duration-300 flex items-center space-x-2">
+                        <i class="fas fa-external-link-alt"></i>
+                        <span>Open MLflow UI</span>
+                    </button>
+                    <button @click="refreshData" 
+                            class="px-4 py-2 bg-secondary text-white rounded-lg hover:bg-secondary/80 transition-colors duration-300 flex items-center space-x-2">
+                        <i class="fas fa-sync-alt"></i>
+                        <span>Refresh</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Experiments Section -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8" x-data="mlflowData()">
+            <!-- Experiments List -->
+            <div class="glass rounded-2xl p-6 card-hover">
+                <h3 class="text-2xl font-bold text-white mb-6 flex items-center">
+                    <i class="fas fa-vials mr-3 text-success"></i>
+                    Experiments
+                </h3>
+                
+                <template x-if="experiments && experiments.length > 0">
+                    <div class="space-y-3">
+                        <template x-for="experiment in experiments" :key="experiment.experiment_id">
+                            <div class="bg-white/5 rounded-lg p-4 cursor-pointer hover:bg-white/10 transition-colors"
+                                 @click="selectExperiment(experiment.experiment_id)">
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        <h4 class="font-semibold text-white" x-text="experiment.name"></h4>
+                                        <p class="text-sm text-white/60" x-text="'ID: ' + experiment.experiment_id"></p>
+                                    </div>
+                                    <div class="text-accent">
+                                        <i class="fas fa-chevron-right"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </template>
+                    </div>
+                </template>
+                
+                <template x-if="!experiments || experiments.length === 0">
+                    <div class="text-center text-white/60 py-8">
+                        <i class="fas fa-flask text-4xl mb-4"></i>
+                        <p>No experiments found</p>
+                    </div>
+                </template>
+            </div>
+
+            <!-- Runs List -->
+            <div class="lg:col-span-2 glass rounded-2xl p-6 card-hover">
+                <h3 class="text-2xl font-bold text-white mb-6 flex items-center">
+                    <i class="fas fa-play mr-3 text-warning"></i>
+                    Recent Runs
+                    <span x-show="selectedExperimentId" class="ml-2 text-sm text-white/60" x-text="'(Experiment: ' + selectedExperimentId + ')'"></span>
+                </h3>
+                
+                <template x-if="runs && runs.length > 0">
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-white">
+                            <thead>
+                                <tr class="border-b border-white/20">
+                                    <th class="text-left py-3 px-2">Run ID</th>
+                                    <th class="text-left py-3 px-2">Status</th>
+                                    <th class="text-left py-3 px-2">Start Time</th>
+                                    <th class="text-left py-3 px-2">RMSE</th>
+                                    <th class="text-left py-3 px-2">MAE</th>
+                                    <th class="text-left py-3 px-2">R²</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <template x-for="run in runs" :key="run.run_id">
+                                    <tr class="border-b border-white/10 hover:bg-white/5 transition-colors">
+                                        <td class="py-3 px-2 font-mono text-xs text-accent" x-text="run.run_id.substring(0, 8) + '...'"></td>
+                                        <td class="py-3 px-2">
+                                            <span class="px-2 py-1 rounded-full text-xs"
+                                                  :class="getStatusColor(run.status)"
+                                                  x-text="run.status"></span>
+                                        </td>
+                                        <td class="py-3 px-2 text-sm text-white/80" x-text="formatDate(run.start_time)"></td>
+                                        <td class="py-3 px-2 text-success" x-text="(run.metrics.rmse || 0).toFixed(3)"></td>
+                                        <td class="py-3 px-2 text-warning" x-text="(run.metrics.mae || 0).toFixed(3)"></td>
+                                        <td class="py-3 px-2 text-secondary" x-text="(run.metrics.r2_score || 0).toFixed(3)"></td>
+                                    </tr>
+                                </template>
+                            </tbody>
+                        </table>
+                    </div>
+                </template>
+                
+                <template x-if="!runs || runs.length === 0">
+                    <div class="text-center text-white/60 py-8">
+                        <i class="fas fa-play-circle text-4xl mb-4"></i>
+                        <p>No runs found for selected experiment</p>
+                    </div>
+                </template>
+            </div>
+        </div>
+
+        <!-- Model Comparison -->
+        <div class="glass rounded-2xl p-6 card-hover mb-8" x-data="modelComparison()">
+            <h3 class="text-2xl font-bold text-white mb-6 flex items-center">
+                <i class="fas fa-balance-scale mr-3 text-secondary"></i>
+                Model Performance Comparison
+            </h3>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- Best RMSE -->
+                <div class="text-center">
+                    <div class="text-4xl text-success mb-2">
+                        <i class="fas fa-trophy"></i>
+                    </div>
+                    <h4 class="text-lg font-semibold text-white mb-2">Best RMSE</h4>
+                    <div class="text-2xl font-bold text-success" x-text="bestMetrics.rmse"></div>
+                    <div class="text-sm text-white/60" x-text="bestMetrics.rmse_model"></div>
+                </div>
+                
+                <!-- Best MAE -->
+                <div class="text-center">
+                    <div class="text-4xl text-warning mb-2">
+                        <i class="fas fa-medal"></i>
+                    </div>
+                    <h4 class="text-lg font-semibold text-white mb-2">Best MAE</h4>
+                    <div class="text-2xl font-bold text-warning" x-text="bestMetrics.mae"></div>
+                    <div class="text-sm text-white/60" x-text="bestMetrics.mae_model"></div>
+                </div>
+                
+                <!-- Best R² -->
+                <div class="text-center">
+                    <div class="text-4xl text-accent mb-2">
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <h4 class="text-lg font-semibold text-white mb-2">Best R²</h4>
+                    <div class="text-2xl font-bold text-accent" x-text="bestMetrics.r2"></div>
+                    <div class="text-sm text-white/60" x-text="bestMetrics.r2_model"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- MLflow Instructions -->
+        <div class="glass rounded-2xl p-6 card-hover">
+            <h3 class="text-2xl font-bold text-white mb-6 flex items-center">
+                <i class="fas fa-info-circle mr-3 text-accent"></i>
+                MLflow Setup Instructions
+            </h3>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div>
+                    <h4 class="text-lg font-semibold text-white mb-4">Local MLflow UI</h4>
+                    <div class="space-y-3">
+                        <div class="bg-gray-900/50 rounded-lg p-3 font-mono text-sm text-green-300">
+                            <div class="flex items-center space-x-2">
+                                <i class="fas fa-terminal text-accent"></i>
+                                <span>mlflow ui --backend-store-uri file:./mlruns</span>
+                            </div>
+                        </div>
+                        <p class="text-white/60 text-sm">
+                            Run this command in your terminal to start the MLflow UI on localhost:5000
+                        </p>
+                    </div>
+                </div>
+                
+                <div>
+                    <h4 class="text-lg font-semibold text-white mb-4">Tracking URI</h4>
+                    <div class="space-y-3">
+                        <div class="bg-gray-900/50 rounded-lg p-3 font-mono text-sm text-green-300">
+                            <div class="flex items-center space-x-2">
+                                <i class="fas fa-folder text-accent"></i>
+                                <span>file:./mlruns</span>
+                            </div>
+                        </div>
+                        <p class="text-white/60 text-sm">
+                            Current tracking URI pointing to local file system
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script>
+        function mlflowData() {
+            return {
+                experiments: [],
+                runs: [],
+                selectedExperimentId: null,
+                loading: false,
+                
+                async init() {
+                    await this.loadExperiments();
+                },
+                
+                async loadExperiments() {
+                    this.loading = true;
+                    try {
+                        const response = await fetch('/api/mlflow/experiments');
+                        this.experiments = await response.json();
+                        
+                        // Auto-select first experiment
+                        if (this.experiments.length > 0) {
+                            await this.selectExperiment(this.experiments[0].experiment_id);
+                        }
+                    } catch (error) {
+                        console.error('Failed to load experiments:', error);
+                        this.experiments = [];
+                    }
+                    this.loading = false;
+                },
+                
+                async selectExperiment(experimentId) {
+                    this.selectedExperimentId = experimentId;
+                    try {
+                        const response = await fetch(`/api/mlflow/runs/${experimentId}`);
+                        this.runs = await response.json();
+                    } catch (error) {
+                        console.error('Failed to load runs:', error);
+                        this.runs = [];
+                    }
+                },
+                
+                getStatusColor(status) {
+                    const colors = {
+                        'FINISHED': 'bg-green-500/20 text-green-300',
+                        'RUNNING': 'bg-blue-500/20 text-blue-300',
+                        'FAILED': 'bg-red-500/20 text-red-300',
+                        'KILLED': 'bg-gray-500/20 text-gray-300'
+                    };
+                    return colors[status] || 'bg-gray-500/20 text-gray-300';
+                },
+                
+                formatDate(timestamp) {
+                    if (!timestamp) return 'N/A';
+                    return new Date(timestamp).toLocaleString();
+                },
+                
+                async refreshData() {
+                    await this.loadExperiments();
+                }
+            }
+        }
+
+        function modelComparison() {
+            return {
+                bestMetrics: {
+                    rmse: 'Loading...',
+                    rmse_model: '',
+                    mae: 'Loading...',
+                    mae_model: '',
+                    r2: 'Loading...',
+                    r2_model: ''
+                },
+                
+                async init() {
+                    // Simulate loading best metrics
+                    setTimeout(() => {
+                        this.bestMetrics = {
+                            rmse: '8.95',
+                            rmse_model: 'Random Forest',
+                            mae: '6.42',
+                            mae_model: 'Random Forest', 
+                            r2: '0.934',
+                            r2_model: 'Gradient Boosting'
+                        };
+                    }, 1000);
+                }
+            }
+        }
+    </script>
+</body>
+</html>
