@@ -527,23 +527,11 @@ Contributions are welcome! Please follow these steps:
 - Update documentation as needed
 - Ensure all tests pass before submitting PR
 
-## 📝 Future Enhancements
-
-- [ ] Real-time GPS tracking integration
-- [ ] Mobile application (Android/iOS)
-- [ ] Advanced route optimization algorithms
-- [ ] Integration with popular e-commerce platforms
-- [ ] Multi-language support
-- [ ] Advanced analytics and reporting
-- [ ] A/B testing framework
-- [ ] Automated model retraining pipeline
-- [ ] Customer feedback integration
-- [ ] RESTful API with authentication
-
 ## 📧 Contact
 
 **Tarang Kishor**
 - GitHub: [@tar-ang-2004](https://github.com/tar-ang-2004)
+- Email : [tarangkishor2004@gmail.com](tarangkishor2004@gmail.com)
 - Repository: [E-Commerce-Delivery-Time-Prediction](https://github.com/tar-ang-2004/E-Commerce-Delivery-Time-Prediction)
 
 ## 📄 License
@@ -566,3 +554,4 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 Made with ❤️ by [Tarang Kishor](https://github.com/tar-ang-2004)
 
 </div>
+
