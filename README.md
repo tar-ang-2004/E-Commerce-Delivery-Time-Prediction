@@ -9,20 +9,23 @@ A comprehensive machine learning solution for predicting e-commerce delivery tim
 
 ## 📋 Table of Contents
 
-- [Overview](#overview)
-- [Features](#features)
-- [Project Architecture](#project-architecture)
-- [Installation](#installation)
-- [Usage](#usage)
-- [Model Performance](#model-performance)
-- [Web Application](#web-application)
-- [Data Analysis & Visualizations](#data-analysis--visualizations)
-- [MLflow Tracking](#mlflow-tracking)
-- [Deployment](#deployment)
-- [Project Structure](#project-structure)
-- [Technologies Used](#technologies-used)
-- [Contributing](#contributing)
-- [License](#license)
+- [Overview](#-overview)
+- [Features](#-features)
+- [Project Architecture](#-project-architecture)
+- [Installation](#-installation)
+- [Usage](#-usage)
+- [Model Performance](#-model-performance)
+- [Web Application](#-web-application)
+- [Data Analysis & Visualizations](#-data-analysis--visualizations)
+- [MLflow Tracking](#-mlflow-tracking)
+- [Deployment](#-deployment)
+- [Project Structure](#-project-structure)
+- [Technologies Used](#-technologies-used)
+- [Contributing](#-contributing)
+- [Future Enhancements](#-future-enhancements)
+- [Contact](#-contact)
+- [License](#-license)
+- [Acknowledgments](#-acknowledgments)
 
 ## 🎯 Overview
 
@@ -229,7 +232,7 @@ Top 10 most influential features:
 9. **Area_Density** (3.8%)
 10. **Preparation_Time** (3.9%)
 
-![Feature Importance](feature_importance.csv)
+*Feature importance data available in `feature_importance.csv`*
 
 ## 🌐 Web Application
 
@@ -239,31 +242,43 @@ The Flask web application provides three main interfaces:
 
 Clean, intuitive form for entering delivery parameters and receiving predictions.
 
-![Prediction Form](Flask%20app%20images/Screenshot%202025-10-05%20152952.png)
-*User-friendly prediction interface*
+<div align="center">
+  <img src="Flask app images/Screenshot 2025-10-05 152952.png" alt="Prediction Form" width="800"/>
+  <p><em>User-friendly prediction interface</em></p>
+</div>
 
-![Input Fields](Flask%20app%20images/Screenshot%202025-10-05%20153004.png)
-*Comprehensive input fields for accurate predictions*
+<div align="center">
+  <img src="Flask app images/Screenshot 2025-10-05 153004.png" alt="Input Fields" width="800"/>
+  <p><em>Comprehensive input fields for accurate predictions</em></p>
+</div>
+
+<div align="center">
+  <img src="Flask app images/Screenshot 2025-10-05 153021.png" alt="Prediction Results" width="800"/>
+  <p><em>Detailed prediction results with confidence scores</em></p>
+</div>
 
 ### 2. Analytics Dashboard
 
 Real-time statistics and insights about prediction patterns.
 
-![Prediction Results](Flask%20app%20images/Screenshot%202025-10-05%20153021.png)
-*Detailed prediction results with confidence scores*
+<div align="center">
+  <img src="Flask app images/Screenshot 2025-10-05 153033.png" alt="Dashboard Overview" width="800"/>
+  <p><em>Interactive analytics dashboard showing key metrics</em></p>
+</div>
 
-![Dashboard Overview](Flask%20app%20images/Screenshot%202025-10-05%20153033.png)
-*Interactive analytics dashboard showing key metrics*
+<div align="center">
+  <img src="Flask app images/Screenshot 2025-10-05 153048.png" alt="Statistics View" width="800"/>
+  <p><em>Detailed statistics and prediction history</em></p>
+</div>
 
 ### 3. MLflow Integration
 
 Experiment tracking and model management interface.
 
-![Statistics View](Flask%20app%20images/Screenshot%202025-10-05%20153048.png)
-*Detailed statistics and prediction history*
-
-![MLflow Interface](Flask%20app%20images/Screenshot%202025-10-05%20153103.png)
-*MLflow experiment tracking integration*
+<div align="center">
+  <img src="Flask app images/Screenshot 2025-10-05 153103.png" alt="MLflow Interface" width="800"/>
+  <p><em>MLflow experiment tracking integration</em></p>
+</div>
 
 ### Key Features of Web App
 
@@ -283,29 +298,35 @@ Experiment tracking and model management interface.
 The project includes comprehensive data analysis with visualizations:
 
 #### Correlation Matrix
-![Correlation Matrix](Charts/Correlation_Matrix.png)
-*Correlation heatmap showing relationships between features*
+<div align="center">
+  <img src="Charts/Correlation_Matrix.png" alt="Correlation Matrix" width="800"/>
+  <p><em>Correlation heatmap showing relationships between features</em></p>
+</div>
 
-Key insights:
+**Key insights:**
 - Strong positive correlation between distance and delivery time
 - Traffic conditions significantly impact delivery duration
 - Agent rating shows negative correlation with delivery time (better agents = faster delivery)
 
 #### EDA Analysis
-![EDA Analysis](Charts/EDA_analysis.png)
-*Comprehensive exploratory data analysis*
+<div align="center">
+  <img src="Charts/EDA_analysis.png" alt="EDA Analysis" width="800"/>
+  <p><em>Comprehensive exploratory data analysis</em></p>
+</div>
 
-Findings:
+**Findings:**
 - Peak delivery hours: 12 PM - 2 PM and 5 PM - 7 PM
 - Weekend deliveries are 15% faster on average
 - Urban areas have 20% longer delivery times due to traffic
 - Weather severity can increase delivery time by up to 30%
 
 #### Model Evaluation & Comparison
-![Model Comparison](Charts/Model_Evaluation_&_Comparison.png)
-*Performance comparison of different ML models*
+<div align="center">
+  <img src="Charts/Model_Evaluation_&_Comparison.png" alt="Model Comparison" width="800"/>
+  <p><em>Performance comparison of different ML models</em></p>
+</div>
 
-Analysis:
+**Analysis:**
 - Ensemble models (Gradient Boosting, Random Forest) outperform linear models
 - Tree-based models better capture non-linear relationships
 - Gradient Boosting achieved the best overall performance
@@ -527,11 +548,23 @@ Contributions are welcome! Please follow these steps:
 - Update documentation as needed
 - Ensure all tests pass before submitting PR
 
+## 📝 Future Enhancements
+
+- [ ] Real-time GPS tracking integration
+- [ ] Mobile application (Android/iOS)
+- [ ] Advanced route optimization algorithms
+- [ ] Integration with popular e-commerce platforms
+- [ ] Multi-language support
+- [ ] Advanced analytics and reporting
+- [ ] A/B testing framework
+- [ ] Automated model retraining pipeline
+- [ ] Customer feedback integration
+- [ ] RESTful API with authentication
+
 ## 📧 Contact
 
 **Tarang Kishor**
 - GitHub: [@tar-ang-2004](https://github.com/tar-ang-2004)
-- Email : [tarangkishor2004@gmail.com](tarangkishor2004@gmail.com)
 - Repository: [E-Commerce-Delivery-Time-Prediction](https://github.com/tar-ang-2004/E-Commerce-Delivery-Time-Prediction)
 
 ## 📄 License
@@ -554,5 +587,3 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 Made with ❤️ by [Tarang Kishor](https://github.com/tar-ang-2004)
 
 </div>
-
-
