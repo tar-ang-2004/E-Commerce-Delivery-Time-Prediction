@@ -252,28 +252,28 @@ Clean, intuitive form for entering delivery parameters and receiving predictions
   <p><em>Comprehensive input fields for accurate predictions</em></p>
 </div>
 
+### 2. Analytics Dashboard
+
+Real-time statistics and insights about prediction patterns.
+
 <div align="center">
   <img src="Flask app images/Screenshot 2025-10-05 153021.png" alt="Prediction Results" width="800"/>
   <p><em>Detailed prediction results with confidence scores</em></p>
 </div>
-
-### 2. Analytics Dashboard
-
-Real-time statistics and insights about prediction patterns.
 
 <div align="center">
   <img src="Flask app images/Screenshot 2025-10-05 153033.png" alt="Dashboard Overview" width="800"/>
   <p><em>Interactive analytics dashboard showing key metrics</em></p>
 </div>
 
+### 3. MLflow Integration
+
+Experiment tracking and model management interface.
+
 <div align="center">
   <img src="Flask app images/Screenshot 2025-10-05 153048.png" alt="Statistics View" width="800"/>
   <p><em>Detailed statistics and prediction history</em></p>
 </div>
-
-### 3. MLflow Integration
-
-Experiment tracking and model management interface.
 
 <div align="center">
   <img src="Flask app images/Screenshot 2025-10-05 153103.png" alt="MLflow Interface" width="800"/>
@@ -548,23 +548,11 @@ Contributions are welcome! Please follow these steps:
 - Update documentation as needed
 - Ensure all tests pass before submitting PR
 
-## 📝 Future Enhancements
-
-- [ ] Real-time GPS tracking integration
-- [ ] Mobile application (Android/iOS)
-- [ ] Advanced route optimization algorithms
-- [ ] Integration with popular e-commerce platforms
-- [ ] Multi-language support
-- [ ] Advanced analytics and reporting
-- [ ] A/B testing framework
-- [ ] Automated model retraining pipeline
-- [ ] Customer feedback integration
-- [ ] RESTful API with authentication
-
 ## 📧 Contact
 
 **Tarang Kishor**
 - GitHub: [@tar-ang-2004](https://github.com/tar-ang-2004)
+- Email: [tarangkishor2004@gmail.com](tarangkishor2004@gmail.com)
 - Repository: [E-Commerce-Delivery-Time-Prediction](https://github.com/tar-ang-2004/E-Commerce-Delivery-Time-Prediction)
 
 ## 📄 License
