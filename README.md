@@ -245,22 +245,22 @@ Clean, intuitive form for entering delivery parameters and receiving predictions
 ![Input Fields](Flask%20app%20images/Screenshot%202025-10-05%20153004.png)
 *Comprehensive input fields for accurate predictions*
 
-![Prediction Results](Flask%20app%20images/Screenshot%202025-10-05%20153021.png)
-*Detailed prediction results with confidence scores*
-
 ### 2. Analytics Dashboard
 
 Real-time statistics and insights about prediction patterns.
 
+![Prediction Results](Flask%20app%20images/Screenshot%202025-10-05%20153021.png)
+*Detailed prediction results with confidence scores*
+
 ![Dashboard Overview](Flask%20app%20images/Screenshot%202025-10-05%20153033.png)
 *Interactive analytics dashboard showing key metrics*
-
-![Statistics View](Flask%20app%20images/Screenshot%202025-10-05%20153048.png)
-*Detailed statistics and prediction history*
 
 ### 3. MLflow Integration
 
 Experiment tracking and model management interface.
+
+![Statistics View](Flask%20app%20images/Screenshot%202025-10-05%20153048.png)
+*Detailed statistics and prediction history*
 
 ![MLflow Interface](Flask%20app%20images/Screenshot%202025-10-05%20153103.png)
 *MLflow experiment tracking integration*
@@ -554,4 +554,5 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 Made with ❤️ by [Tarang Kishor](https://github.com/tar-ang-2004)
 
 </div>
+
 
